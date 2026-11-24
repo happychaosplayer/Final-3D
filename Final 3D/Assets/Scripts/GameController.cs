@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private GameObject _gameOverUI;
 
     // Add member variables to store references to all of the UI text.
+    [SerializeField] private TMP_Text _timeText;
 
     private int _commonPoints;
     private int _uncommonPoints;
@@ -24,6 +25,7 @@ public class GameController : MonoBehaviour
     {
         SetGameEnabled(false);
         UpdatePointsText();
+        StartGame();
     }
 
     // ------------------------------------------------------------------------
@@ -32,8 +34,9 @@ public class GameController : MonoBehaviour
         if (_runGame)
         {
             _timeRemaining -= Time.deltaTime;
-            
+
             // Update the game timer text.
+            _timeText.text = "Time Left: " + ((int)_timeRemaining).ToString();
 
             if (_timeRemaining <= 0)
             {
@@ -51,7 +54,7 @@ public class GameController : MonoBehaviour
         SetGameEnabled(true);
 
         _timeRemaining = _maxTimeSeconds;
-        
+
         // Update the game timer text.
     }
 

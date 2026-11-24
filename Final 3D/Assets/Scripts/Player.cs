@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -7,7 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Rigidbody _playerRigidbody;
     [SerializeField] private Animator _animator;
     [SerializeField] private float _moveSpeed;
-    [SerializeField] private float _jump;
+    [SerializeField] private float _jumpSpeed;
     [SerializeField] private float _mouseSensitivity;
 
     private Transform _cameraTrans;
@@ -41,8 +42,13 @@ public class Player : MonoBehaviour
         // Code the player's left/right movement and jump using the veritcal
         //      and horizontal input.
         float vertical = Input.GetAxis("Vertical");
+        transform.position += vertical * transform.forward * _moveSpeed * Time.deltaTime;
+
         float horizontal = Input.GetAxis("Horizontal");
-        
+        transform.position += horizontal * transform.right * _moveSpeed * Time.deltaTime;
+
+        Jump();
+
 
         // This rotates the ball as you move.
         // You don't need to change this code.
@@ -56,4 +62,21 @@ public class Player : MonoBehaviour
     // ------------------------------------------------------------------------
     // Utilize a COLLISION method to prevent the player from double jumping.
     // The player should only be able to jump after making contact with the ground.
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Ground")
+        {
+            _isGrounded = true;
+            _ballRigidbody.isKinematic = true;
+        }
+    }
+    private void Jump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && _isGrounded == true)
+        {
+            _playerRigidbody.isKinematic = false;
+            _playerRigidbody.AddForce(Vector3.up * _jumpSpeed, ForceMode.Impulse);
+            _isGrounded = false;
+        }
+    }
 }
